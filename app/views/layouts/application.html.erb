@@ -11,6 +11,102 @@
   </head>
 
   <body>
-    <%= yield %>
+  <div class="navbar">
+      <div class="navbar-inner">
+        <!-- <div class="container"> -->
+        <!-- <a href="<%= home_url %>" class="header-logo"> -->
+          <div class="logo-picture">
+            <img src="<%=asset_path "runlogo.png"%>">
+          </div>
+          <div class="brand header-item"><div style="color:black">RUN</div><div style="color:white">GRAPHS</div></div>
+        <!-- </a> -->
+        <div class="header-search-bar">
+          <form class="search-form">
+            <input
+              type="text"
+              name="q"
+              placeholder="Search for races and runners"
+              id="all-search-input"
+              class="header-search-bar-input"
+              autocomplete="off">
+          </form>
+          <div class="all-results-container">
+          </div>
+          <div id="st-results-container" class="st-result-listing"></div>
+        </div>
+        <div class="header-buttons-container">
+          <ul class="nav nav-pills">
+            <li class='header-item' role="presentation"><a href="<%= races_url %>">RACE RESULTS</a></li>
+            <li class='header-item' role="presentation"><a href="<%= projected_races_url %>">RACE PREDICTIONS </a></li>
+            <li class='header-item' role="presentation"><a href="<%= teams_url %>">TEAM RECORDS</a></li>
+            <!-- <li class='header-item' role="presentation"><a href="<%= blog_url %>">BLOG</a></li> -->
+          </ul>
+        <!-- </div> -->
+        </div>
+      </div>
+    </div>
+    <div class="container content-container">
+      <div class="row">
+        <div class="span12">
+          <%= bootstrap_flash %>
+
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+
+    </footer>
+   <!-- container -->
+
+  <script type="text/javascript">
+      $("#all-search-input").on("keyup", function (event) {
+        var $currentTarget = $(event.currentTarget);
+        $q = $("#all-search-input").val();
+
+        if ($q.length >= 2) {
+
+          $.ajax({
+            url: "<%= search_all_url %>",
+            type: "GET",
+            data: {'q': $q},
+            success: function (resp) {
+              if (resp != '<ul>\n</ul>') {
+                $('.all-results-container').html(resp);
+                $('.all-results-container').show();
+              } else {
+                  $('.all-results-container').empty();
+                  $('.all-results-container').hide();
+                }
+              }
+          });
+        } else {
+          $('.all-results-container').hide();
+        }
+      });
+
+      $(".search-form").on('submit', function(event) {
+        event.preventDefault();
+        $('.search-all-item').first().click();
+        $('.all-results-container').hide();
+        $(".search-form").find("input[type=text], textarea").val("");
+      })
+
+      // autofocus on text input when '/' is clicked if not in an input field
+      $( 'body' ).keypress(function( event ) {
+        if (!$("input").is(":focus")) {
+          if ( event.which == 47 ) {
+          event.preventDefault();
+            $( ".search-form :input" ).focus();
+          };
+        }
+      });
+
+    	var spinner = new Spinner().spin();
+    	$( 'a' ).click(function() {
+    		$('.content-container').html(spinner.el);
+    	})
+  </script>
   </body>
 </html>
