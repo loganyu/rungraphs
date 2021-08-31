@@ -5,8 +5,8 @@ ruby '3.0.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.4', '>= 6.1.4.1'
-# Use sqlite3 as the database for Active Record
-gem 'sqlite3', '~> 1.4'
+# Use postgresql as the database for Active Record
+gem 'pg', '~> 1.1'
 # Use Puma as the app server
 gem 'puma', '~> 5.0'
 # Use SCSS for stylesheets
@@ -23,6 +23,32 @@ gem 'jbuilder', '~> 2.7'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
+
+gem 'jquery-rails'
+gem 'jquery-datatables-rails'
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'
+gem 'friendly_id', '~> 5.4.0'
+gem 'spinjs-rails'
+# bootstrap
+gem "therubyracer"
+gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
+gem "twitter-bootstrap-rails"
+# scraping
+gem 'nokogiri'
+gem 'mechanize'
+gem 'watir'
+gem 'chromedriver-helper'
+gem 'phantomjs'
+gem 'nested-hstore'
+gem 'rest-client'
+gem 'actionmailer'
+gem 'dotenv-rails', :groups => [:development, :test]
+# password protection
+gem 'lockup'
+
+
+
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
