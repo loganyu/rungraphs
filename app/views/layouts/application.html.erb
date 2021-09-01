@@ -9,14 +9,17 @@
     <%= stylesheet_link_tag 'application', media: 'all' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
-
   <body>
-  <div class="navbar">
+
+    <div class="navbar">
       <div class="navbar-inner">
+        <div class="container">
+        <!-- <a href="" class="header-logo"> -->
           <div class="logo-picture">
-            <img src="<%=asset_path "runlogo.png"%>">
+            <img class="logo-picture" src="<%=asset_path "runlogo.png"%>">
           </div>
           <div class="brand header-item"><div style="color:black">RUN</div><div style="color:white">GRAPHS</div></div>
+        <!-- </a> -->
         <div class="header-search-bar">
           <form class="search-form">
             <input
@@ -36,7 +39,9 @@
             <li class='header-item' role="presentation"><a href="">RACE RESULTS</a></li>
             <li class='header-item' role="presentation"><a href="">RACE PREDICTIONS </a></li>
             <li class='header-item' role="presentation"><a href="">TEAM RECORDS</a></li>
+            <!-- <li class='header-item' role="presentation"><a href="">BLOG</a></li> -->
           </ul>
+        </div>
         </div>
       </div>
     </div>
@@ -53,7 +58,7 @@
     <footer>
 
     </footer>
-   <!-- container -->
+  <!-- container -->
 
   <script type="text/javascript">
       $("#all-search-input").on("keyup", function (event) {
@@ -98,10 +103,10 @@
         }
       });
 
-    	var spinner = new Spinner().spin();
-    	$( 'a' ).click(function() {
-    		$('.content-container').html(spinner.el);
-    	})
+      var spinner = new Spinner().spin();
+      $( 'a' ).click(function() {
+        $('.content-container').html(spinner.el);
+      })
 
   </script>
   </body>

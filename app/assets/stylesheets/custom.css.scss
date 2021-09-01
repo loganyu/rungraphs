@@ -61,12 +61,11 @@ div {
   padding-top: 4px;
   padding-bottom: 2px;
   background: #50ae26;
-  height: 40px;
 }
 
 .brand.header-item {
   div {
-    display: inline-block;
+    float: left;
   }
   text-shadow: none;
   font-weight: bold;
@@ -151,10 +150,13 @@ td.dataTables_empty {
 }
 
 .header-search-bar {
+  padding-left: 10px;
   float: left;
+  width: 300px;
 }
 
 .header-search-bar-input {
+  width: 100%;
   padding: 8px 6px !important;
   margin-bottom: 0px !important;
 };
