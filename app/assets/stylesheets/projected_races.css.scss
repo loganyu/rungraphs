@@ -1,0 +1,66 @@
+// Place all the styles related to the projected_races controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.team-results-main-container {
+  padding-top: 30px;
+}
+
+.team-results-title {
+  text-align: center;
+}
+
+.team-results-column {
+  width: 585px;
+}
+
+.mens-results-container {
+  float: left;
+}
+
+.womens-results-container {
+  float: left;
+}
+
+.team-results-container {
+padding: 0 30px;
+height: 280px;
+}
+
+.team-title {
+  font-weight: bold;
+  font-size: 24px;
+  width: 400px;
+  float: left;
+}
+
+.team-gender-results-title {
+  text-align: center;
+}
+
+.team-time {
+font-size: 22px;
+}
+
+.runner-name-container {
+  width: 415px;
+  float: left;
+}
+
+.runner-container {
+padding-left: 14px;
+}
+
+.team-runners-container {
+  padding-top: 5px;
+  padding-bottom: 25px;
+  .runner-container:nth-child(even) {background: rgba(0,0,0,0.02)};
+  .runner-container:nth-child(odd) {background: #FFF};
+}
+
+.non-scoring-runner {
+  color: #999;
+  a {
+    color: #999;
+  }
+}

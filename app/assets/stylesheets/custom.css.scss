@@ -1,0 +1,282 @@
+html, body, h1, h2, div, img, label, input, form, button, ul, ol, li, a, textarea, p, tr, th {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
+  color: black;
+}
+
+body {
+  min-width: 800px;
+
+}
+
+input, textarea {
+  padding: 5px 10px;
+}
+
+h1 {
+  font-size: 38px;
+}
+
+h2 {
+  font-size: 26px;
+}
+
+.group:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+a, a:visited, a:active, a:hover {
+  text-decoration: none;
+}
+
+ul, ol {
+  list-style-type: none;
+}
+
+body, textarea {
+  font-family: sans-serif;
+
+}
+
+div {
+  display: block;
+}
+
+.group:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.navbar {
+  min-width: 1000px;
+}
+
+.navbar-inner {
+  width: 100%;
+  padding-top: 4px;
+  padding-bottom: 2px;
+  background: #50ae26;
+  height: 40px;
+}
+
+.brand.header-item {
+  div {
+    display: inline-block;
+  }
+  text-shadow: none;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  font-size: 25px;
+}
+
+.nav.nav-pills {
+  margin-left: 25px;
+  padding-top: 2px;
+}
+
+.navbar .nav>li>a {
+  color: white;
+  text-shadow: none;
+  font-weight: bold;
+}
+
+.table th, .table td {
+  text-align: center;
+}
+
+table.dataTable thead th, table.dataTable thead td {
+  padding: 2px 5px;
+}
+
+table.dataTable thead > tr > th {
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+table.dataTable tbody th, table.dataTable tbody td {
+  padding: 8px 4px;
+}
+
+/* clickable fields in datatables */
+
+/* results show table */
+
+table.dataTable tbody td.result-table-clickable-td {
+  padding: 0px 4px;
+}
+
+.result-table-clickable-field {
+  padding: 8px 0px;
+  &:hover {
+    color: #109cfb;
+  };
+  &:active {
+    background-color: #f1f1f1;
+  };
+}
+
+/* runner show table */
+
+td.runner-table-clickable-td {
+  padding: 0px 8px;
+}
+
+.runner-table-clickable-field {
+  &:hover {
+    color: #109cfb;
+  };
+  &:active {
+    background-color: #f1f1f1;
+  };
+}
+
+td.dataTables_empty {
+  height: 360px;
+  vertical-align: middle;
+  font-size: 30px;
+}
+
+/* NAV BAR */
+
+.logo-picture {
+  width: 20px;
+  padding-top: 5px;
+  padding-right: 6px;
+  float: left;
+}
+
+.header-search-bar {
+  float: left;
+}
+
+.header-search-bar-input {
+  padding: 8px 6px !important;
+  margin-bottom: 0px !important;
+};
+
+.header-buttons-container {
+  float: left;
+}
+
+.all-results-container {
+  display: none;
+  position: absolute;
+  border: 1px solid #dcdcdc;
+  border-bottom: none;
+  width: 340px;
+  z-index: 1;
+  background: white;
+  border-radius: 2px;
+  padding-top: 3px;
+}
+
+/* BODY */
+
+.content-container {
+  padding-bottom: 35px;
+}
+
+.search-all-item {
+  border-bottom: 1px solid #dcdcdc;
+  padding: 9px 20px;
+  &:hover {
+    background-color: #f8f8f8;
+  };
+  &:active {
+    background-color: #c7c7c7;
+  };
+
+  .search-all-left {
+    font-weight: bold;
+  }
+
+  .search-all-right {
+    font-size: 12px;
+    padding-left: 20px;
+  }
+}
+
+.select-box {
+  width: 85px;
+  margin: 15px;
+}
+
+.sub-title-container {
+  font-size: 42px;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-weight: 100;
+  padding: 10px 0;
+}
+
+.team-records-container {
+  margin-bottom: 25px;
+}
+
+.projected-races-container {
+  margin-bottom: 25px;
+}
+
+.team-alphabet-container {
+  min-width: 100%;
+  min-height: 25px;
+  background-color: #FFF;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.fixed {
+  position: fixed;
+  top: 0;
+}
+
+.team-alphabet-character {
+  padding: 2px 10px;
+  float: left;
+  &:active {
+    background-color: #c7c7c7;
+  };
+  &:hover {
+    cursor: pointer;
+    background-color: #d9e0e2;
+  };
+}
+
+.index-page-table {
+  th, td {
+    padding: 10px;
+  }
+  .header-column {
+    th {
+      text-align: left;
+    }
+    border-bottom: 1px solid rgb(229, 229, 229);
+  }
+  .race-name {
+    width: 670px;
+  }
+  .race-distance {
+    width: 250px;
+  }
+  .race-date {
+    width: 250px;
+  }
+  .index-page-link {
+    &:active {
+      background-color: #c7c7c7;
+    };
+    &:hover {
+      background-color: #d9e0e2;
+      cursor: pointer;
+    };
+  }
+
+  .team-name {
+    width: 1170px;
+  }
+
+  tr:nth-child(even) {background: rgba(0,0,0,0.02)};
+}

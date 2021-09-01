@@ -1,0 +1,13 @@
+<div class="races-container">
+	<div class="sub-title-container">
+		race results  	
+	</div>
+	Select year:
+	<select class="select-box js-year-select">
+		<% (Time.now.year).downto(1986) do |year| %>
+		  <option value=<%="#{year}"%>><%="#{year}"%></option>
+	  <% end %>
+	</select>
+	<div class="races-list-container">
+	</div>
+</div>

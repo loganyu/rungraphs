@@ -24,6 +24,9 @@ gem 'jbuilder', '~> 2.7'
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
 
+# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
+gem 'turbolinks'
+
 gem 'jquery-rails'
 gem 'jquery-datatables-rails'
 gem 'elasticsearch-model'
@@ -31,6 +34,7 @@ gem 'elasticsearch-rails'
 gem 'friendly_id', '~> 5.4.0'
 gem 'spinjs-rails'
 # bootstrap
+gem 'sprockets', '~> 3.0'
 gem "therubyracer"
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
 gem "twitter-bootstrap-rails"

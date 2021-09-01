@@ -1,0 +1,28 @@
+// Place all the styles related to the team controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+/* INDEX PAGE */
+
+.team-container {
+    float: left;
+    border: 1px solid #c7c7c7;
+    margin: 15px 15px;
+    padding: 15px 40px;
+    width: 170px;
+    height: 170px;
+    background-color: #f8f8f8;
+    text-align: center;
+    &:active {
+      background-color: #c7c7c7;
+    };
+    &:hover {
+      background-color: #d9e0e2;
+    };
+}
+
+/* SHOW PAGE */
+
+.team-page-content {
+  position: relative;
+}
