@@ -36,10 +36,9 @@
         </div>
         <div class="header-buttons-container">
           <ul class="nav nav-pills">
-            <li class='header-item' role="presentation"><a href="">RACE RESULTS</a></li>
-            <li class='header-item' role="presentation"><a href="">RACE PREDICTIONS </a></li>
-            <li class='header-item' role="presentation"><a href="">TEAM RECORDS</a></li>
-            <!-- <li class='header-item' role="presentation"><a href="">BLOG</a></li> -->
+            <li class='header-item' role="presentation"><a href="<%= races_url %>">RACE RESULTS</a></li>
+            <li class='header-item' role="presentation"><a href="<%= projected_races_url %>">RACE PREDICTIONS </a></li>
+            <li class='header-item' role="presentation"><a href="<%= teams_url %>">TEAM RECORDS</a></li>
           </ul>
         </div>
         </div>
@@ -68,7 +67,7 @@
         if ($q.length >= 2) {
 
           $.ajax({
-            url: "",
+            url: "<%= search_all_url %>",
             type: "GET",
             data: {'q': $q},
             success: function (resp) {

@@ -1,0 +1,32 @@
+<ul>
+  <% results.each do |result| %>
+
+    	<% if result[:type] == "runner" %>
+    		<a href="<%=runner_url(result[:slug])%>">
+    			<li class="search-all-item">
+		    		<div class="search-all-left">
+		    			<%= "#{result[:full_name].split.map(&:capitalize).join(' ')}" %>
+		    		</div>
+		    		<div class="search-all-right">
+		    			<% if result[:team] != '0' && !result[:team].blank? %>
+						  	Team: <%= result[:team].upcase %>
+						  <% else %>
+						  	unattached
+							<% end %>
+		    		</div>
+		    	</li>
+	    	</a>
+      <% else %>
+         <a href="<%=race_url(result[:slug])%>">
+         	<li class="search-all-item">
+	    		<div class="search-all-left">
+	    			<%= "#{result[:name]}" %>
+	    		</div>
+	    		<div class="search-all-right">
+					  <%= Date.parse(result[:date]).strftime("%B %d, %Y") %>
+	    		</div>
+	    	</li>
+	    </a>
+      <% end %>
+  <% end %>
+</ul>

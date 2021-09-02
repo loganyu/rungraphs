@@ -1,0 +1,180 @@
+<%- model_class = Runner -%>
+<div class="page-header">
+  <h1>
+    <%= "#{@runner.first_name.split.map(&:capitalize).join(' ')} #{@runner.last_name.split.map(&:capitalize).join(' ')}" %>
+  </h1>
+</div>
+
+<dl class="dl-horizontal">
+  <% if @runner.team != '0' && !@runner.team.blank? %>
+    <dt><strong>Team:</strong></dt>
+    <dd>
+      <% if !TEAMS[@runner.team].nil? %>
+        <%= TEAMS[@runner.team] %>
+      <% else %>
+        <%= @runner.team.upcase %>
+      <% end %>
+    </dd>
+  <% else %>
+    <dt><strong>Team:</strong></dt>
+    <dd>unattached</dd>
+  <% end %>
+  <dt><strong>Sex:</strong></dt>
+  <dd><%= @runner.sex %></dd>
+  <dt><strong> hometown:</strong></dt>
+  <dd><%= "#{@runner.city}, #{@runner.state}" %></dd>
+  <dt><strong> country:</strong></dt>
+  <dd><%= "#{@runner.country}" %></dd>
+</dl>
+
+<table class="race-table table table-hover">
+    <thead>
+        <tr>
+            <th>Race</th>
+       	    <th>
+          		<select class="runner-header-select runner-select-distance race-select-distance">
+          		  <option value="" select="selected">
+          		    Distance
+          		  </option>
+          		</select>
+      	    </th>
+            <th>Date</th>
+            <th>Overall</th>
+            <th>Gender</th>
+            <th>AG</th>
+            <th>Age</th>
+            <th>Bib</th>
+	          <th>
+          		<select class="runner-header-select runner-select-team race-select-team">
+          	   	  <option value="" select="selected">
+          		    Team
+          		  </option>
+          		</select>
+      	    </th>
+            <th>Time</th>
+            <th>Pace</th>
+            <th>AG Time</th>
+            <th>AG%</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @results.each do |result| %>
+          <tr>
+              <td class="runner-table-clickable-td">
+                <a href="<%= race_url(result.race.slug) %>">
+                  <div class="runner-table-clickable-field">
+                    <%= "#{result.race.name}" %>
+                  </div>
+                </a>
+              </td>
+	            <td><%= result.distance %>
+              <td><%= result.race.date.strftime("%m/%d/%Y") %></td>
+              <td><%= result.overall_place %></td>
+              <td><%= result.gender_place %></td>
+              <td><%= result.age_place %></td>
+              <td><%= result.age %></td>
+              <td><%= result.bib %></td>
+                    <td class="runner-table-clickable-td">
+                      <% if result.team != '0' && !result.team.blank? %>
+                        <a href="<%= team_url(result.team) %>">
+                          <div class="runner-table-clickable-field">
+                            <%= result.team.upcase %>
+                          </div>
+                        </a>
+                      <% end %>
+                    </td>
+              <% if result.net_time %>
+                <td><%= result.net_time %></td>
+              <% elsif result.finish_time %>
+                <td><%= result.finish_time %></td>
+              <% else %>
+                <td><%= result.gun_time %></td>
+              <% end %>
+              <td><%= result.pace_per_mile %></td>
+              <td><%= result.ag_time %> </td>
+              <td><%= result.ag_percent %>%</td>
+          </tr>
+        <% end %>
+    </tbody>
+</table>
+
+<script>
+$( document ).ready(function() { 
+  var $raceTable = $('.race-table').DataTable( {
+      "aasorting": [],
+      "aocolumndefs": [
+        { "orderable": false, "targets": "_all" }
+      ],
+      "pagingtype": "simple_numbers",
+      "dom": "f<bottom'results-table-header'>",
+      "paging": false,
+      "lengthmenu": [ 20 ],
+      "blengthchange": false,
+      // "responsive": true,
+      "columns": [
+        {"orderable": false},
+	      {"sortable": false},
+        {"orderable": true},
+	      {"width": "70px", "orderable": true},
+        {"width": "70px", "orderable": true},
+        {"width": "70px", "orderable": true},
+        {"width": "70px", "orderable": true},
+        null,
+        {"sortable": false},
+        { "orderable": true },
+        { "orderable": true },
+        { "orderable": true },
+        { "orderable": true },
+      ],
+      "order": [[2, "desc" ]],
+    });
+
+
+    // populate select distance
+    $raceTable.column(1).data().unique().sort().each( function ( d, j ) {
+        if ($(d).children) {
+	  var choice = $(d).selector;
+          $('.race-select-distance').append( '<option value="'+choice+'">'+choice+'</option>' );
+        }
+    } );
+
+    // Distance Select
+    $( '.race-select-distance' ).change( function () {
+        if (this.value.length == 0) {
+          $raceTable
+            .column( 1 )
+            .search( this.value )
+            .draw();
+        } else {
+          $raceTable
+              .column( 1 )
+              .search( "^" + this.value + "$", true, false )
+              .draw();
+        }
+    } );
+
+    // populate select team
+    $raceTable.column(8).data().unique().sort().each( function ( d, j ) {
+        if ($(d).children) {
+          var choice = $(d).children().text().replace(/ |\n/g,'');
+          $('.race-select-team').append( '<option value="'+choice+'">'+choice+'</option>' );
+        }
+    } );
+
+    // Team Select
+    $( '.race-select-team' ).change( function () {
+        $raceTable
+            .column( 8 )
+            .search( this.value )
+            .draw();
+    } );
+
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-60193441-1', 'auto');
+  ga('send', 'pageview');
+});
+</script>

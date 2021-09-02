@@ -1,0 +1,32 @@
+<table class="index-page-table">
+	<thead>
+		<tr class="header-column">
+			<th class="race-name">Race</th>
+			<th class="race-distance">Distance</th>
+			<th class="race-date">Date</th>
+		</tr>
+	</thead>
+	<tbody class="race-table-body">
+		<% races.each do |race| %>
+	  	<tr class="index-page-link js-index-page-link" data-href="<%=race_url(race.slug)%>">
+  			<td class="race-name">
+  					<%=race.name%>
+  			</td>
+  			<td class='race-distance'><%=race.distance%>
+	  			<% if race.distance == 1.0 %>
+	      	  mile
+	       	<% else %>
+	          miles
+	        <% end %>
+	     	</td>
+  			<td class='race-date'><%=race.date.strftime("%m/%d/%Y")%></td>
+			</tr>
+		<% end %>
+	</tbody>
+</table>
+
+<script>
+	$(".js-index-page-link").click(function() {
+        window.document.location = $(this).data("href");
+    });
+</script>

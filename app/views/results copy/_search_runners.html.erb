@@ -1,0 +1,7 @@
+<ul>
+  <% runners.each do |runner| %>
+    <li>
+        <%= link_to "#{runner[:first_name]} #{runner[:last_name]} : #{runner[:team]}", controller: "runners", action: "show", id: "#{runner[:id]}"%>
+    </li>
+  <% end %>
+</ul>

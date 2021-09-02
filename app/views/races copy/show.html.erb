@@ -1,0 +1,298 @@
+<%- model_class = Race -%>
+<div class="results-page-header page-header">
+  <h1><%= @race.name %></h1>
+  <dl>
+    <% @race.attributes.each do |attribute, value| %>
+      <% next if value.nil? %>
+      <% next if ["club_points", "id", "created_at", "updated_at", "date", "temperature",
+       "humidity", "name", "slug", "men_results", "women_results", "men_40_results", 
+       "women_40_results", "men_50_results", "women_50_results", "men_60_results", 
+       "women_60_results", "men_70_results", "women_70_results"].include? attribute %>
+      <dt class="race-attribute">
+        <strong>
+          <% if attribute == "date_and_time" %>
+            date / time:
+          <% else %>
+            <%= attribute %>:
+          <% end %>
+        </strong>
+      </dt>
+      <dd class="race-attribute-value">
+        <%= value %>
+        <% case attribute %>
+        <% when "distance" %>
+          <% if value == 1.0 %>
+            mile
+          <% else %>
+            miles
+          <% end %>
+        <% end %>
+      </dd>
+    <% end %>
+  </dl>
+</div>
+
+
+<div class="race-page-content">
+  <div class="race-results-table">
+      <table class="results-table table table-hover" id="resultTable">
+          <thead>
+              <tr>
+                  <th class="race-header-title">Overall</th>
+                  <th class="race-header-title">Gender</th>
+                  <th class="race-header-title">AG</th>
+                  <th class="race-header-title">
+                    <input type="text" placeholder="City" class="city-text-input"/>
+                  </th>
+                  <th class="race-header-title">
+                    <input type="text" placeholder="Runner" class="runner-text-input"/>
+                  </th>
+                  <th>
+                    <select class="race-header-select race-select-team">
+                      <option value="" select="selected">
+                        Team
+                      </option>
+                      <option value="nbr">
+                        NBR
+                      </option>
+                    </select>
+                  </th>
+                  <th>
+                    <select class="race-header-select race-select-sex">
+                      <option value="" select="selected">
+                        Sex
+                      </option>
+                      <option value="M">
+                        M
+                      </option>
+                      <option value="F">
+                        F
+                      </option>
+                    </select>
+                  </th>
+                  <th>
+                    <select class="race-header-select race-select-age">
+                      <option value="" select="selected">
+                        Age
+                      </option>
+                      <option value="00-19">
+                        &#60; 19
+                      </option>
+                      <% (2..9).each do |i| %>
+                        <option value="<%=i%>0-<%=i%>4">
+                          <%=i%>0 - <%=i%>4
+                        </option>
+                        <option value="<%=i%>5-<%=i%>9">
+                          <%=i%>5 - <%=i%>9
+                        </option>
+                      <% end %>
+                    </select>
+                  </th>
+                  <th class="race-header-title">Bib</th>
+                  <th class="race-header-title"> <%= @race_time_array[0] %> </th>
+                  <th class="race-header-title">Pace</th>
+                  <th class="race-header-title">AG Time</th>
+                  <th class="race-header-title">AG%</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+      </table>
+  </div>
+</div>
+
+<% @results.each do |result| %>
+  <div class="team-results-main-container">
+    <div class="team-results-title">
+      <h2> <%= result[:title] %> </h2>
+    </div>
+    <div class="mens-results-container team-results-column">
+      <h3 class="team-gender-results-title"> Men's Results </h3>
+      <% result[:men_teams].times do |i| %>
+        <% break if result[:men][i].nil? %>
+        <div class="team-results-container">
+          <div class="team-title-container group">
+            <div class="team-title">
+              <%= i + 1  %>
+              :
+              <% if !TEAMS[result[:men][i]["team"].upcase].nil? %>
+                <a href="<%=team_url(result[:men][i]["team"])%>"> <%= TEAMS[result[:men][i]["team"].upcase] %> </a>
+              <% else %>
+                <%= result[:men][i]["team"].upcase %>
+              <% end %>
+            </div>
+            <div class="team-time"><%= result[:men][i]["total_time"].prepend(' ').sub!(/\s0{1,2}:*0*|\s/, "") %></div>
+          </div>
+          <div class="team-runners-container">
+            <% JSON.parse(result[:men][i]["runners"].gsub('\"', '"').gsub('=>',':')).collect{|k,v| v}.each_with_index do |runner, team_spot| %>
+              <div class="runner-container">
+                <div class="runner-name-container <%= 'non-scoring-runner' if team_spot > result[:score_count] - 1 %>">
+                   <a href="<%=runner_url runner["slug"]%>"> <%= runner["name"] %></a>
+                </div>
+                <div class="runner-time-container <%= 'non-scoring-runner' if team_spot > result[:score_count] - 1 %>">
+                  <%= runner["net_time"].prepend(' ').sub!(/\s0{1,2}:*0*|\s/, "") %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <div class="womens-results-container team-results-column">
+      <h3 class="team-gender-results-title"> Women's Results </h3>
+      <% result[:women_teams].times do |i| %>
+        <% break if result[:women][i].nil? %>
+        <div class="team-results-container">
+          <div class="team-title-container group">
+            <div class="team-title">
+              <%= i + 1  %>
+              :
+              <% if !TEAMS[result[:women][i]["team"].upcase].nil? %>
+                <a href="<%=team_url(result[:women][i]["team"])%>"> <%= TEAMS[result[:women][i]["team"].upcase] %> </a>
+              <% else %>
+                <%= result[:women][i]["team"].upcase %>
+              <% end %>
+            </div>
+            <div class="team-time"><%= result[:women][i]["total_time"].prepend(' ').sub!(/\s0{1,2}:*0*|\s/, "") %></div>
+          </div>
+          <div class="team-runners-container">
+            <% JSON.parse(result[:women][i]["runners"].gsub('\"', '"').gsub('=>',':')).collect{|k,v| v}.each_with_index do |runner, team_spot| %>
+              <div class="runner-container">
+                <div class="runner-name-container <%= 'non-scoring-runner' if team_spot > result[:score_count] - 1 %>">
+                  <a href="<%=runner_url runner["slug"]%>"> <%= runner["name"] %></a>
+                </div>
+                <div class="runner-time-container <%= 'non-scoring-runner' if team_spot > result[:score_count] - 1 %>">
+                  <%= runner["net_time"].prepend(' ').sub!(/\s0{1,2}:*0*|\s/, "") %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<script>
+$( document ).ready(function() {
+  var allowFilter = ['resultTable'];
+
+  var $resultsTable = $('.results-table').DataTable( {
+      "dom": "ip<bottom'results-table-header'pi>",
+      "processing": true,
+      "serverSide": true,
+      "ajax": {
+        "url": "<%= get_race_results_url(@race.slug) %>",
+        "data": function(d) {
+          d.age_range = $( '.race-select-age' ).val()
+        }
+      },
+      "columns": [
+        { "data": "overall_place", "width": "70px", "orderable": true, "searchable": false},
+        { "data": "gender_place", "width": "70px", "orderable": true, "searchable": false},
+        { "data": "age_place", "width": "65px", "orderable": true, "searchable": false},
+        { "data": "city", "orderable": false},
+        { "data": "full_name", "orderable": false},
+        { "data": "team", "orderable": false},
+        { "data": "sex", "orderable": false},
+        { "data": "age", "orderable": false, "searchable": false},
+        { "data": "bib",  "orderable": true, "searchable": false },
+        { "data": "net_time",  "orderable": true, "searchable": false },
+        { "data": "pace_per_mile",  "orderable": true, "searchable": false },
+        { "data": "ag_time",  "orderable": true, "searchable": false },
+        { "data": "ag_percent",  "orderable": true, "searchable": false }
+      ],
+      "createdRow": function ( row, data, index ) {
+        $('td:eq(4)', row)
+        .addClass('result-table-clickable-td')
+        .html('\
+                  <a href="<%= root_url %>' + 'runners/' + data.slug + '">\
+                    <div class="result-table-clickable-field"> \
+                      ' + data.full_name + ' \
+                    </div> \
+                  </a> '
+                );
+
+        if (data.team != null && data.team != 0 && data.team.replace(/\s/g, "").length != 0) {
+          var teamColHTML = '<a href="<%= root_url %>' + 'teams/' + data.team + '"> \
+              <div class="result-table-clickable-field results-table-team"> \
+                ' + data.team + '\
+              </div> \
+            </a> \
+          ';
+        } else {
+          var teamColHTML = data.team;
+        }
+
+        $('td:eq(5)', row)
+          .addClass('result-table-clickable-td')
+          .html(teamColHTML);
+
+        if (data.net_time != null) {
+          var time = data.net_time
+        } else if (data.finish_time != null) {
+          var time = data.finish_time
+        } else {
+          var time = data.gun_time
+        } 
+        $('td:eq(9)', row)
+          .html(time);
+
+
+        return row;
+      }
+    });
+  
+    // get team selection
+    $.get("<%= get_teams_url(@race.slug) %>", function(data) {
+      $(data).each(function(index, team) {
+        $('.race-select-team').append( '<option value="'+team+'">'+team+'</option>' );
+      })
+    })
+
+    // City Search
+    $( '.city-text-input' ).on( 'keyup change', function () {
+        $resultsTable
+            .column( 3 )
+            .search( this.value )
+            .draw();
+    } );
+
+    // Text Search
+    $( '.runner-text-input' ).on( 'keyup change', function () {
+        $resultsTable
+            .column( 4 )
+            .search( this.value )
+            .draw();
+    } );
+
+    // Team Select
+    $( '.race-select-team' ).change( function () {
+        $resultsTable
+            .column( 5 )
+            .search( this.value )
+            .draw();
+    } );
+
+    // Gender Select
+    $( '.race-select-sex' ).change( function () {
+        $resultsTable
+            .column( 6 )
+            .search( this.value, true, false )
+            .draw();
+    } );
+
+    // Age group select
+    $( '.race-select-age' ).change( function () {
+        $resultsTable.draw();
+    } );
+
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-60193441-1', 'auto');
+  ga('send', 'pageview');
+});
+</script>

@@ -1,0 +1,46 @@
+<h3 style="font-weight:bold;font-size:18px;color:#000000;text-align:center;">
+  NYRR Unattached Brooklyn Runners for <a href="<%= root_url %>races/<%= @race_data[:race_info][:race_slug] %>"><%= @race_data[:race_info][:name] %></a> - <%= @race_data[:race_info][:date].strftime("%m/%d/%y") %>
+</h3>
+<% if @race_data[:race_info][:date_and_time] %>
+  <div><strong>Date and Time:</strong> <%= @race_data[:race_info][:date_and_time] %></div>
+<% end %>
+<% if @race_data[:race_info][:location] %>
+  <div><strong>Location:</strong> <%= @race_data[:race_info][:location] %></div>
+<% end %>
+<% if @race_data[:race_info][:weather] %>
+  <div><strong>Weather:</strong> <%= @race_data[:race_info][:weather] %></div>
+<% end %>
+
+<hr style="height:1px;color:#ccc;"/>
+<table cellspacing="0" style="font-family:'lucida grande',arial,sans-serif;width:100%;text-align:center">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Strava Search</th>
+    <th>Gender</th>
+    <th>Pace</th>
+    <th>Net Time</th>
+    <th>Age</th>
+    <th>AG Percent</th>
+    <th>City</th>
+    <th>State</th>
+    <th>Country</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @race_data[:results].each do |result| %>
+      <tr style="<%= cycle("background-color:#efefef", "") %>">
+        <td><a href="<%= root_url %>runners/<%= result[:runner_slug] %>"><%= result[:name] %></a></td>
+        <td><a href=<%= URI.encode("https://www.strava.com/athletes/search?text=#{result[:name]}")%>>results</a></td>
+        <td><%= result[:gender] %></td>
+        <td><%= result[:pace] %></td>
+        <td><%= result[:net_time] %></td>
+        <td><%= result[:age] %></td>
+        <td><%= result[:ag_percent] %></td>
+        <td><%= result[:city] %></td>
+        <td><%= result[:state] %></td>
+        <td><%= result[:country] %></td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>

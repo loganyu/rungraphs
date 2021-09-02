@@ -1,0 +1,39 @@
+<h3 style="font-weight:bold;font-size:18px;color:#000000;text-align:center;">
+  Rungraphs Strava Segment Weekly Report for <%= Time.now.in_time_zone("Eastern Time (US & Canada)").to_date.strftime("%m/%d/%y") %>
+</h3>
+
+<hr style="height:1px;color:#ccc;"/>
+<% @leaderboards.each do |leaderboard_title, leaderboard| %>
+  <p style="font-weight:bold;font-size:20px;text-align:center"><%= leaderboard_title %></p>
+  <% leaderboard.each do |segment_leaderboard| %>
+    <p style="font-weight:bold;font-size:16px;"> <a href="http://www.strava.com/segments/<%= segment_leaderboard[:segment_id] %>"><%= segment_leaderboard[:name] %></a></p>
+    <table cellspacing="0" style="font-family:'lucida grande',arial,sans-serif;width:100%;text-align:center">
+      <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Name</th>
+        <th>Pace</th>
+        <th>Distance</th>
+        <th>Duration</th>
+        <th>Date</th>
+        <th>Time</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% segment_leaderboard[:entries].each do |entry| %>
+        <tr style="<%= cycle("background-color:#efefef", "") %>">
+          <td><%= entry['rank'] %></td>
+          <td><a href="http://www.strava.com/athletes/search?text=<%= entry['athlete_name'].tr(' ','+') %>"><%= entry['athlete_name'] %></a></td>
+          <td><%= ((entry['moving_time']/(entry['distance']*0.000621371))/60).floor %>:<%= ((entry['moving_time']/(entry['distance']*0.000621371))%60).round.to_s.rjust(2, "0") %> min/mi</td>
+          <td><%= entry['distance'].round %> meters</td>
+          <td><%= (entry['moving_time']/60).floor %>:<%= (entry['moving_time']%60).to_s.rjust(2, "0") %> </td>
+          <td><%= DateTime.parse(entry['start_date_local']).strftime("%m/%d/%y") %></td>
+          <td><%= DateTime.parse(entry['start_date_local']).strftime("%I:%M%P") %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <br>
+    <br>
+  <% end %>
+<% end %>

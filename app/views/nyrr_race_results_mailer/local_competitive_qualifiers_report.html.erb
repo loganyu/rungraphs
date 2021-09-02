@@ -1,0 +1,48 @@
+<h3 style="font-weight:bold;font-size:18px;color:#000000;text-align:center;">
+  <%= @race_data[:race_info][:team_code].upcase %> Local Competitive Qualifiers at <a href="<%= root_url %>races/<%= @race_data[:race_info][:race_slug] %>"><%= @race_data[:race_info][:name] %></a> - <%= @race_data[:race_info][:date].strftime("%m/%d/%y") %>
+</h3>
+<% if @race_data[:race_info][:date_and_time] %>
+  <div><strong>Date and Time:</strong> <%= @race_data[:race_info][:date_and_time] %></div>
+<% end %>
+<% if @race_data[:race_info][:location] %>
+  <div><strong>Location:</strong> <%= @race_data[:race_info][:location] %></div>
+<% end %>
+<% if @race_data[:race_info][:weather] %>
+  <div><strong>Weather:</strong> <%= @race_data[:race_info][:weather] %></div>
+<% end %>
+
+<hr style="height:1px;color:#ccc;"/>
+<table cellspacing="0" style="font-family:'lucida grande',arial,sans-serif;width:100%;text-align:center">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Gender</th>
+    <th>Age</th>
+    <th>Net Time</th>
+    <th>Pace</th>
+    <th>AG Percent</th>
+    <th>Previous Qualifying Race</th>
+    <th>Date</th>
+    <th>Net Time</th>
+    <th>AG Percent</th>
+    <th>Pace</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @race_data[:lc_qualifiers].each do |lc_qualifier| %>
+      <tr style="<%= cycle("background-color:#efefef", "") %>">
+        <td><a href="<%= root_url %>runners/<%= lc_qualifier[:runner_slug] %>"><%= lc_qualifier[:name] %></a></td>
+        <td><%= lc_qualifier[:gender] %></td>
+        <td><%= lc_qualifier[:age] %></td>
+        <td><%= lc_qualifier[:net_time] %></td>
+        <td><%= lc_qualifier[:pace] %></td>
+        <td><%= lc_qualifier[:ag_percent] %></td>
+        <td><a href="<%= root_url %>races/<%= lc_qualifier[:first_race_slug] %>"><%= lc_qualifier[:first_race_name] %></a></td>
+        <td><%= lc_qualifier[:first_result_date] %></td>
+        <td><%= lc_qualifier[:first_result_net_time] %></td>
+        <td><%= lc_qualifier[:first_result_ag_percent] %></td>
+        <td><%= lc_qualifier[:first_result_pace] %></td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
