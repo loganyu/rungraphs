@@ -1,0 +1,2 @@
+class ProjectedResult < ApplicationRecord
+end

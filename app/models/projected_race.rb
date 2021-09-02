@@ -1,0 +1,2 @@
+class ProjectedRace < ApplicationRecord
+end
