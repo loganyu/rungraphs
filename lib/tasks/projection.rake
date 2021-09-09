@@ -77,7 +77,7 @@ namespace :projection do
       end
 
       if runner_info['bib'] < projected_result.bib
-        projected_result.update_attributes("bib" => runner_info['bib'])
+        projected_result.update("bib" => runner_info['bib'])
         projected_result.save!
         next
       end
@@ -126,7 +126,7 @@ namespace :projection do
     if !runners.empty? && !runners[0].results.empty?
       runner = runners[0]
 
-      projected_result.update_attributes("runner_id" => runner.id, "team" => runner.team, "state" => runner.state, "age" => Time.now.year - runner.birth_year)
+      projected_result.update("runner_id" => runner.id, "team" => runner.team, "state" => runner.state, "age" => Time.now.year - runner.birth_year)
 
       # exclude mile since AG not as accurate and check for AG% since 18 mile Tune Up does not have AG%order('ag_percent DESC')[0]
       best_result = runner.results.where.not(:ag_percent => nil).where.not(:distance => nil).where("(distance != 1.0 AND distance != 0.2) AND date > ?", 1.year.ago).order('ag_percent DESC')[0]
@@ -196,10 +196,10 @@ namespace :projection do
       puts "projected_time #{projected_time}"
       projected_pace_in_seconds = projected_time_in_seconds / projected_race.distance
       projected_pace = "#{sprintf "%02d", (projected_pace_in_seconds / 60).floor}:#{sprintf "%02d", ((projected_pace_in_seconds % 3600) % 60).round}"
-      projected_result.update_attributes("net_time" => projected_time, "pace_per_mile" => projected_pace, "ag_percent" => best_result.ag_percent)
+      projected_result.update("net_time" => projected_time, "pace_per_mile" => projected_pace, "ag_percent" => best_result.ag_percent)
     else
       puts "Not found: #{runner_info['name']} "
-      projected_result.update_attributes("team" => '---')
+      projected_result.update("team" => '---')
     end
 
     puts

@@ -1,0 +1,2 @@
+class ProjectedResultsController < ApplicationController
+end
