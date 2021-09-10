@@ -379,7 +379,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
           result_runner.save!
 
           result.update("runner_id" => result_runner.id, "race_id" => race.id)
-          puts "#{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
+          puts "#{race.year} #{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
           runner_index += 1
         end
 
