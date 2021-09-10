@@ -305,7 +305,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
           #create or find runner
 
 
-          if result.age && !result_data["birthdate"].nil?
+          if result.age 
             birth_year = race.date.year - result.age
           else
             birth_year = nil
