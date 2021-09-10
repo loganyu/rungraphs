@@ -200,7 +200,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
   end
 
   # Get results
-  genders = ["M", "F"]
+  genders = ["M", "F", "X"]
   age_ranges = [[8,14], [15,19],[20,24],[25,29],[30,34],[35,39],[40,44],[45,49],[50,54],[55,59],[60,100]]
   age_ranges.each do |age_range|
     if Result.where(race_id: race.id).where("age > ?", age_range[1]).exists?
