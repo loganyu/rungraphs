@@ -254,8 +254,6 @@ module Rungraphs
           "Masters Women 50+" => @race.women_50_results,
           "Masters Men 60+" => @race.men_60_results,
           "Masters Women 60+" => @race.women_60_results,
-          "Masters Men 60+" => @race.men_60_results,
-          "Masters Women 60+" => @race.women_60_results,
           "Masters Men 70+" => @race.men_70_results,
           "Masters Women 70+" => @race.women_70_results,
         }
