@@ -212,6 +212,10 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
         puts "skipping gender M age_range #{age_range}"
         next
       end
+      if gender == "F" && Result.where(race_id: race.id).where("age >= ?", age_range[0]).where(sex: "X").exists?
+        puts "skipping gender F age_range #{age_range}"
+        next
+      end
       results = Result.where(race_id: race.id).
         where("age >= ?", age_range[0]).
         where("age <= ?", age_range[1]).
