@@ -54,6 +54,7 @@ namespace :nyrr do
           upsert_race_data(race_data["eventCode"], update_runner_profiles, send_race_reports)
         rescue => error
           puts error
+          puts error.backtrace
           retry_count += 1
           if retry_count < 10
             retry
@@ -108,6 +109,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
     distance = (distance_unit_code.delete("Kk").to_f*KILOMETERS_TO_MILES).round(1)
   elsif distance_unit_code == "MAR"
     distance = 26.2
+    return # skip for faster scraping
   elsif distance_unit_code == "HALF"
     distance = 13.1
   else
@@ -294,13 +296,15 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
 
           result = Result.where(result_params).first
           if result
-            # puts "already exists: #{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
+            puts "already exists: #{result.date.year} - #{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
             runner_index += 1
             next
           end
           result = Result.new(result_params)
 
           #create or find runner
+
+
           if result.age && !result_data["birthdate"].nil?
             birth_year = race.date.year - result.age
           else
@@ -325,7 +329,6 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
             )
           else
             found = false
-
             runners.each do |runner|
               if runner.birth_year && runner.birth_year.between?(birth_year - 1, birth_year + 1) && runner.city == result.city && runner.team == result.team
                 result_runner = runner
@@ -430,6 +433,7 @@ def post(url, params)
   rescue => e
     retries -= 1
     puts "Error making request. retries left: #{retries} url: #{url}. params: #{params}. Error: #{e}"
+    puts e.backtrace
     if retries > 0
       sleep(0.25)
       retry
