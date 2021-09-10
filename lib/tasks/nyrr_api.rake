@@ -301,10 +301,10 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
           result = Result.new(result_params)
 
           #create or find runner
-          if result.age
+          if result.age && !result_data["birthdate"].nil?
             birth_year = race.date.year - result.age
           else
-            birth_year = ""
+            birth_year = nil
           end
           
           runners = Runner.where(first_name: result.first_name, last_name: result.last_name)
@@ -314,6 +314,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
               first_name: result.first_name,
               last_name: result.last_name,
               birth_year: birth_year,
+              birthdate: result_data["birthdate"] ? result_data["birthdate"].to_date : nil,
               team: result.team,
               team_name: result.team_name,
               sex: result.sex,
@@ -358,6 +359,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
                 first_name: result.first_name,
                 last_name: result.last_name,
                 birth_year: birth_year,
+                birthdate: result_data["birthdate"] ? result_data["birthdate"].to_date : nil,
                 team: result.team,
                 sex: result.sex,
                 full_name: "#{result.first_name} #{result.last_name}",
@@ -379,7 +381,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
           result_runner.save!
 
           result.update("runner_id" => result_runner.id, "race_id" => race.id)
-          puts "#{race.year} #{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
+          puts "#{result.date.year} #{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
           runner_index += 1
         end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_02_183524) do
+ActiveRecord::Schema.define(version: 2021_09_10_174734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -154,7 +154,6 @@ ActiveRecord::Schema.define(version: 2021_09_02_183524) do
   create_table "runners", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
-    t.integer "birth_year"
     t.string "team"
     t.string "team_name"
     t.string "sex"
@@ -165,6 +164,8 @@ ActiveRecord::Schema.define(version: 2021_09_02_183524) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "slug"
+    t.integer "birth_year"
+    t.date "birthdate"
     t.index ["first_name", "last_name", "city"], name: "index_runners_on_first_name_and_last_name_and_city"
     t.index ["slug"], name: "index_runners_on_slug", unique: true
   end
