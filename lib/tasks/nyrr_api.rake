@@ -40,7 +40,10 @@ namespace :nyrr do
     
     response = post(url , params)
     races_data = response["response"]["items"]
-    races_data.reverse_each do |race_data|
+    if update_runner_profiles
+      races_data.reverse!
+    end
+    races_data.each do |race_data|
       if race_data["isVirtual"] == true
         next
       end
@@ -296,29 +299,29 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
 
           result = Result.where(result_params).first
           if result
-            puts "already exists: #{result.date.year} - #{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
+            puts "already exists: #{date} - #{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
             runner_index += 1
             next
           end
           result = Result.new(result_params)
 
           #create or find runner
-
-
+          birthdate = result_data["birthdate"] ? result_data["birthdate"].to_date : nil
           if result.age 
             birth_year = race.date.year - result.age
           else
             birth_year = nil
           end
           
-          runners = Runner.where(first_name: result.first_name, last_name: result.last_name)
+          
+          runners = Runner.where(first_name: result.first_name, last_name: result.last_name, birthdate: birthdate)
 
           if runners.empty?
             result_runner = Runner.create(
               first_name: result.first_name,
               last_name: result.last_name,
               birth_year: birth_year,
-              birthdate: result_data["birthdate"] ? result_data["birthdate"].to_date : nil,
+              birthdate: birthdate,
               team: result.team,
               team_name: result.team_name,
               sex: result.sex,
@@ -336,7 +339,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
                 break
               end
             end
-
+        
             if not found
               runners.each do |runner|
                 if runner.birth_year && runner.birth_year.between?(birth_year - 1, birth_year + 1) && runner.city == result.city
@@ -384,7 +387,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
           result_runner.save!
 
           result.update("runner_id" => result_runner.id, "race_id" => race.id)
-          puts "#{result.date.year} #{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
+          puts "#{date} #{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
           runner_index += 1
         end
 
@@ -435,7 +438,7 @@ def post(url, params)
     puts "Error making request. retries left: #{retries} url: #{url}. params: #{params}. Error: #{e}"
     puts e.backtrace
     if retries > 0
-      sleep(0.25)
+      sleep(10)
       retry
     end
   end

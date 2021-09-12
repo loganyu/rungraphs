@@ -5,9 +5,10 @@
 
 =begin
 
-rake projection:new["http://api.rtrt.me/events/NYRR-TEAMCHAMPIONSHIPS-2019/profiles","4d7a9ceb0be65b3cc4948ee9","DB46DA9BD41A9123CD26","5.0","Team Championships 2019","July 27 2019 7:00am","07/27/19"]
+rake 'projection:new[http://api.rtrt.me/events/NYRR-5THAVEMILE-2021/profiles,4d7a9ceb0be65b3cc4948ee9,31131D3E84A707837E70,1.0,2021 5th Ave Mile,September 21 2021 7:00am,09/12/21]'
 
-rake projection:new["http://api.rtrt.me/events/NYRR-HEALTHYKIDNEY-2019/profiles","4d7a9ceb0be65b3cc4948ee9","DB46DA9BD41A9123CD26","6.2","Healthy Kidney 10k","March 3rd 2019 9:00am","04/24/19"]
+rake projection:new["http://api.rtrt.me/events/NYRR-HEALTHYKIDNEY-2019/profiles","4d7a9ceb0be65b3cc4948ee9","31131D3E84A707837E70","6.2","Healthy Kidney 10k","March 3rd 2019 9:00am","04/24/19"]
+
 
 =end
 desc "Create Race Projection"
@@ -40,7 +41,7 @@ namespace :projection do
       start: start
     }
     puts "requesting runners from #{start} to #{start + 999}"
-    response = RestClient.post url, params, :content_type => :json, :accept => :json
+    response = RestClient.post url, params, :content_type => "application/x-www-form-urlencoded", :accept => :json
     json_roster_data = /{.+}/.match(response)[0]
     json_data_hash = JSON.parse(json_roster_data)
     roster_data = json_data_hash["list"]
@@ -54,7 +55,7 @@ namespace :projection do
 
       puts "requesting runners from #{start} to #{start + 999}"
       params[:start] = start
-      response = RestClient.post url, params, :content_type => :json, :accept => :json
+      response = RestClient.post url, params, :content_type => "application/x-www-form-urlencoded", :accept => :json
       json_roster_data = /{.+}/.match(response)[0]
       json_data_hash = JSON.parse(json_roster_data)
       roster_data.concat(json_data_hash["list"])

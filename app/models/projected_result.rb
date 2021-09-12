@@ -1,4 +1,4 @@
 class ProjectedResult < ApplicationRecord
-  belongs_to :runner, inverse_of: :results
-  belongs_to :race, inverse_of: :results
+  belongs_to :runner, optional: true
+  belongs_to :projected_race, inverse_of: :projected_results
 end
