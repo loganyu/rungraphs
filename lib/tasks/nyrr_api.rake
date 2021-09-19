@@ -108,6 +108,10 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
   race_name = race_details["eventName"]
   location = race_details["venue"]
   distance_unit_code = race_details["distanceUnitCode"]
+  # get results for 10 miler
+  if distance_unit_code != "10M"
+    return
+  end
   if distance_unit_code.match(/K/i)
     distance = (distance_unit_code.delete("Kk").to_f*KILOMETERS_TO_MILES).round(1)
   elsif distance_unit_code == "MAR"
