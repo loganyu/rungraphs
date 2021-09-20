@@ -31,7 +31,7 @@ namespace :nyrr do
     params = {
       pageIndex: 1,
       pageSize: 100,
-      searchString: "10 mile",
+      searchString: year,
       sortColumn: "StartDateTime",
       sortDescending: 1,
     }
