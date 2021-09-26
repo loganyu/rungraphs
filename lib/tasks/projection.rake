@@ -5,7 +5,7 @@
 
 =begin
 
-rake 'projection:new[http://api.rtrt.me/events/NYRR-5THAVEMILE-2021/profiles,4d7a9ceb0be65b3cc4948ee9,31131D3E84A707837E70,1.0,2021 5th Ave Mile,September 21 2021 7:00am,09/12/21]'
+rake 'projection:new[http://api.rtrt.me/events/NYRR-BRONX-10M-2021/profiles,4d7a9ceb0be65b3cc4948ee9,31131D3E84A707837E70,10.0,2021 Bronx 10 Mile,September 25 2021 8:00am,09/25/21]'
 
 rake projection:new["http://api.rtrt.me/events/NYRR-HEALTHYKIDNEY-2019/profiles","4d7a9ceb0be65b3cc4948ee9","31131D3E84A707837E70","6.2","Healthy Kidney 10k","March 3rd 2019 9:00am","04/24/19"]
 
