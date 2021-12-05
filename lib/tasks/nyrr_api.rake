@@ -6,7 +6,8 @@ namespace :nyrr do
   HEADERS = {
     :token => TOKEN,
     :content_type => "application/x-www-form-urlencoded",
-    :accept => :json
+    :accept => :json,
+    :cookie => "_gcl_au=1.1.254715768.1636081267; _pin_unauth=dWlkPU5ERTFPVEU1WmpBdE5HTmpaUzAwT0RsakxXRXlaakF0T1Rjek9ETmhabVpoWkdabQ; _derived_epik=dj0yJnU9TDZnRk8zS2g2VjJDR2lJSWJDYTlqazBkWVdob0JUUDUmbj1VWW4tcTRiUVFQR293Qm5YWlZfTlNnJm09NyZ0PUFBQUFBR0dHcEtvJnJtPTQmcnQ9QUFBQUFHQ0FSaE0; _ga_GERLLKBLQG=GS1.1.1636213915.2.1.1636213932.0; _ga=GA1.3.1597946323.1636081267; _ga=GA1.2.1597946323.1636081267; ARRAffinity=331d520a380c9b7cccae0ad57493dae21cbf2e741834c609ad12b3fa90afc41c; ARRAffinitySameSite=331d520a380c9b7cccae0ad57493dae21cbf2e741834c609ad12b3fa90afc41c; _gid=GA1.3.1988140501.1638734201; _gid=GA1.2.1988140501.1638734201; __atuvc=5%7C45%2C0%7C46%2C0%7C47%2C0%7C48%2C2%7C49; __atuvs=61ad1978fccb1231001; _dc_gtm_UA-45693420-4=1; _dc_gtm_UA-45693420-14=1; QueueITAccepted-SDFrts345E-V3_rmsqueue=EventId%3Drmsqueue%26QueueId%3D00000000-0000-0000-0000-000000000000%26RedirectType%3Ddisabled%26IssueTime%3D1638734286%26Hash%3D3c80cd1985d3d804f7708769df00c3e841f057ba2d64900deba76cef2fb8efdf"
   }
 
   task :get_results, [:year, :update_runner_profiles, :send_race_reports] => :environment do |t, arg|
