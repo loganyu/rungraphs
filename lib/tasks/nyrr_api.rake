@@ -7,7 +7,6 @@ namespace :nyrr do
     :token => TOKEN,
     :content_type => "application/x-www-form-urlencoded",
     :accept => :json,
-    :cookie => "QueueITAccepted-SDFrts345E-V3_rmsqueue=EventId%3Drmsqueue%26QueueId%3D00000000-0000-0000-0000-000000000000%26RedirectType%3Ddisabled%26IssueTime%3D1638740870%26Hash%3D7eba18be7a27c4ab9da92a6e08d86c04d236a5048d0f39674d5720de1fe1cb67"
   }
 
   task :get_results, [:year, :update_runner_profiles, :send_race_reports] => :environment do |t, arg|
@@ -442,6 +441,17 @@ def post(url, params)
     retries ||= 3
     response = JSON.parse(RestClient.post(url, params, HEADERS))
     return response
+  rescue RestClient::ExceptionWithResponse => err
+    begin
+      err.response.follow_redirection
+    rescue RestClient::ExceptionWithResponse => err2
+      begin
+        err2.response.follow_redirection
+      rescue RestClient::ExceptionWithResponse => err3
+        HEADERS[:cookie] = err3.response.headers[:set_cookie][0]
+        return JSON.parse(err3.response.follow_redirection)
+      end
+    end
   rescue => e
     retries -= 1
     puts "Error making request. retries left: #{retries} url: #{url}. params: #{params}. Error: #{e}"
