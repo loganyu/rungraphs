@@ -100,13 +100,16 @@ module Rungraphs
       end
 
       def get_team_race_data(team_name, team_champs = false)
+      puts 'GET TEAM RACE DATA'
         if @race.nil?
           return
         end
         team_results = @race.results.where(:team => team_name).order(:overall_place)
         male_team_results = @race.results.where(:team => team_name, :sex => 'm').order(:overall_place)
         female_team_results = @race.results.where(:team => team_name, :sex => 'f').order(:overall_place)
-        if male_team_results.length == 0 && female_team_results == 0
+        non_binary_team_results = @race.results.where(:team => team_name, :sex => 'x').order(:overall_place)
+
+        if male_team_results.length == 0 && female_team_results == 0 && non_binary_team_results == 0
           return
         end
         race_info = {
@@ -143,6 +146,29 @@ module Rungraphs
         end
 
         female_results = female_team_results.map do |result|
+          current_race_time = result.net_time || result.finish_time || result.gun_time
+          if current_race_time[0] == "0"
+            current_race_time = current_race_time[2..-1]
+          end
+          {
+            :name => "#{result.first_name} #{result.last_name}",
+            :gender => result.sex,
+            :age => result.age,
+            :ag_percent => result.ag_percent,
+            :net_time => current_race_time,
+            :pace => result.pace_per_mile,
+            :runner_slug => Runner.find(result.runner_id).slug,
+            :city => result.city,
+            :state => result.state,
+            :country => result.country,
+            :overall_place => result.overall_place,
+            :gender_place => result.gender_place,
+            :ag_gender_place => result.ag_gender_place,
+            :age_place => result.age_place
+          }
+        end
+
+        non_binary_results = non_binary_team_results.map do |result|
           current_race_time = result.net_time || result.finish_time || result.gun_time
           if current_race_time[0] == "0"
             current_race_time = current_race_time[2..-1]
@@ -295,6 +321,7 @@ module Rungraphs
           :male_results => male_results,
           :female_results => female_results,
           :prs => prs,
+          :non_binary_results => non_binary_results,
           :first_team_race => first_team_race,
           :first_race_in_distance => first_race_in_distance,
           :ag_award_results => ag_award_results,
