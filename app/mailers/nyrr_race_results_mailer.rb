@@ -31,7 +31,7 @@ class NyrrRaceResultsMailer < ApplicationMailer
       puts "No race found. Bailing on email."
       return
     elsif
-      @race_data[:male_results].count == 0 && @race_data[:female_results].count == 0
+      @race_data[:male_results].count == 0 && @race_data[:female_results].count == 0 && @race_data[:non_binary_results].count == 0
       puts "No runners on team. Bailing on email."
       return
     else

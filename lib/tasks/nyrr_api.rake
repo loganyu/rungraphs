@@ -38,7 +38,6 @@ namespace :nyrr do
     }
 
     url = "https://results.nyrr.org/api/events/search"
-    
     response = post(url , params)
     races_data = response["response"]["items"]
     if update_runner_profiles
@@ -65,6 +64,8 @@ namespace :nyrr do
 
   task :get_result, [:race_code, :update_runner_profiles, :send_race_reports] => :environment do |t, arg|
     race_code = arg[:race_code]
+    retry_count = 0
+
     if arg[:update_runner_profiles] == "false"
       update_runner_profiles = false
     else
@@ -213,6 +214,10 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
         puts "skipping gender F age_range #{age_range}"
         next
       end
+      if gender == "X" && Result.where(race_id: race.id).where("age >= ?", age_range[0]).where(sex: "X").exists?
+        puts "skipping gender X age_range #{age_range}"
+        next
+      end
       results = Result.where(race_id: race.id).
         where("age >= ?", age_range[0]).
         where("age <= ?", age_range[1]).
@@ -299,13 +304,13 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
 
           #create or find runner
           birthdate = result_data["birthdate"] ? result_data["birthdate"].to_date : nil
-          if result.age 
+          if result.age
             birth_year = race.date.year - result.age
           else
             birth_year = nil
           end
-          
-          
+
+
           runners = Runner.where(first_name: result.first_name, last_name: result.last_name, birthdate: birthdate)
 
           if runners.empty?
@@ -331,7 +336,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
                 break
               end
             end
-        
+
             if not found
               runners.each do |runner|
                 if runner.birth_year && runner.birth_year.between?(birth_year - 1, birth_year + 1) && runner.city == result.city
@@ -397,7 +402,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
   race.set_team_results(team_champs)
 
   if send_race_reports
-    NyrrRaceResultsMailer.team_results_report('nbr', race.slug, "rungraphs-reports@googlegroups.com", team_champs).deliver_now
+    NyrrRaceResultsMailer.team_results_report('nbr', race.slug, ["rungraphs-reports@googlegroups.com", "zhua89@gmail.com"], team_champs).deliver_now
     NyrrRaceResultsMailer.team_results_report('qdr', race.slug, ['yu.logan@gmail.com', 'Qdrunners@gmail.com'], team_champs).deliver_now
     NyrrRaceResultsMailer.team_results_report('dwrt', race.slug, ['yu.logan@gmail.com', 'dashingwhippets@gmail.com'], team_champs).deliver_now
     NyrrRaceResultsMailer.team_results_report('cptc', race.slug, ['yu.logan@gmail.com', 'almdavid@gmail.com'], team_champs).deliver_now

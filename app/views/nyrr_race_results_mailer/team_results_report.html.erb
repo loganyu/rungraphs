@@ -121,6 +121,7 @@
   <br>
 <% end %>
 
+
 <% if !@race_data[:first_race_in_distance].empty? %>
   <h3>First NYRR <%= @race_data[:race_info][:distance] %>M Race (<%= @race_data[:first_race_in_distance].count %>)</h3>
   <% @race_data[:first_race_in_distance].each do |racer| %>
@@ -130,7 +131,7 @@
   <br>
 <% end %>
 
-<h3><%= @race_data[:male_results].count + @race_data[:female_results].count %> Total <%= "Finisher".pluralize(@race_data[:male_results].count + @race_data[:female_results].count) %> </h3>
+<h3><%= @race_data[:male_results].count + @race_data[:female_results].count + @race_data[:non_binary_results].count %> Total <%= "Finisher".pluralize(@race_data[:male_results].count + @race_data[:female_results].count + @race_data[:non_binary_results].count) %> </h3>
 
 <%
   female_results_by_age = {
@@ -141,6 +142,98 @@
     "Masters Women 70+" => @race_data[:female_results].select {|result| result[:age] >= 70},
   }
 %>
+
+<% female_results_by_age.each do |results_type, female_results| %>
+  <% if female_results.count > 0 %>
+    <h3><%= "#{results_type} - #{female_results.count} #{"finisher".pluralize(female_results.count)}" %></h3>
+    <table cellspacing="0" style="font-family:'lucida grande',arial,sans-serif;width:100%;text-align:center">
+      <thead>
+      <tr>
+        <th>Overall</th>
+        <th>Gender</th>
+        <th>Age</th>
+        <th>Name</th>
+        <th>Gender</th>
+        <th>Pace</th>
+        <th>Net Time</th>
+        <th>Age</th>
+        <th>AG Gender</th>
+        <th>AG Percent</th>
+        <th>City</th>
+        <th>State</th>
+        <th>Country</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% female_results.each do |result| %>
+          <tr style="<%= cycle("background-color:#efefef", "") %>">
+            <td><%= result[:overall_place] %></td>
+            <td><%= result[:gender_place] %></td>
+            <td><%= result[:age_place] %></td>
+            <td><%= result[:name].split.map(&:capitalize).join(' ') %></td>
+            <td><%= result[:gender] %></td>
+            <td><%= result[:pace] %></td>
+            <td><%= result[:net_time] %></td>
+            <td><%= result[:age] %></td>
+            <td><%= result[:ag_gender_place] %></td>
+            <td><%= result[:ag_percent] ? sprintf('%.2f', result[:ag_percent]) : "" %></td>
+            <td><%= result[:city] %></td>
+            <td><%= result[:state] %></td>
+            <td><%= result[:country] %></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <br>
+    <br>
+  <% end %>
+<% end %>
+
+<% if !@race_data[:non_binary_results].empty? %>
+  <h3>Non Binary</h3>
+  <% @race_data[:non_binary_results].each do |racer| %>
+        <table cellspacing="0" style="font-family:'lucida grande',arial,sans-serif;width:100%;text-align:center">
+          <thead>
+          <tr>
+            <th>Overall</th>
+            <th>Gender</th>
+            <th>Age</th>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Pace</th>
+            <th>Net Time</th>
+            <th>Age</th>
+            <th>AG Gender</th>
+            <th>AG Percent</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Country</th>
+          </tr>
+          </thead>
+          <tbody>
+              <tr style="<%= cycle("background-color:#efefef", "") %>">
+                <td><%= racer[:overall_place] %></td>
+                <td><%= racer[:gender_place] %></td>
+                <td><%= racer[:age_place] %></td>
+                <td><%= racer[:name].split.map(&:capitalize).join(' ') %></td>
+                <td><%= racer[:gender] %></td>
+                <td><%= racer[:pace] %></td>
+                <td><%= racer[:net_time] %></td>
+                <td><%= racer[:age] %></td>
+                <td><%= racer[:ag_gender_place] %></td>
+                <td><%= racer[:ag_percent] ? sprintf('%.2f', racer[:ag_percent]) : "" %></td>
+                <td><%= racer[:city] %></td>
+                <td><%= racer[:state] %></td>
+                <td><%= racer[:country] %></td>
+              </tr>
+          </tbody>
+        </table>
+        <br>
+        <br>
+  <% end %>
+  <br>
+  <br>
+<% end %>
 
 <% female_results_by_age.each do |results_type, female_results| %>
   <% if female_results.count > 0 %>
