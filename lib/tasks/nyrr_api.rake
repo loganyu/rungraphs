@@ -426,12 +426,15 @@ def post(url, params)
     response = JSON.parse(RestClient.post(url, params, HEADERS))
     return response
   rescue RestClient::ExceptionWithResponse => err
+    sleep(2)
     begin
       err.response.follow_redirection
     rescue RestClient::ExceptionWithResponse => err2
+      sleep(2)
       begin
         err2.response.follow_redirection
       rescue RestClient::ExceptionWithResponse => err3
+        sleep(2)
         HEADERS[:cookie] = err3.response.headers[:set_cookie][0]
         return JSON.parse(err3.response.follow_redirection)
       end
