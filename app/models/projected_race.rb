@@ -90,14 +90,14 @@ class ProjectedRace < ApplicationRecord
         if team_rosters.include? pr.team
           if pr.sex == 'M'
             team_rosters[pr.team]['m'] << {"name" => pr.full_name, "net_time_in_seconds" => net_time_in_seconds, "net_time" => net_time, "slug" => pr.runner.slug }
-          else
+          elsif pr.sex == 'F'
             team_rosters[pr.team]['f'] << {"name" => pr.full_name, "net_time_in_seconds" => net_time_in_seconds, "net_time" => net_time, "slug" => pr.runner.slug }
           end
         else
           team_rosters[pr.team] = {'m' => [], 'f' => []}
           if pr.sex == 'M'
             team_rosters[pr.team]['m'] << {"name" => pr.full_name, "net_time_in_seconds" => net_time_in_seconds, "net_time" => net_time, "slug" => pr.runner.slug}
-          else
+          elsif pr.sex == 'F'
             team_rosters[pr.team]['f'] << {"name" => pr.full_name, "net_time_in_seconds" => net_time_in_seconds, "net_time" => net_time, "slug" => pr.runner.slug }
           end
         end
