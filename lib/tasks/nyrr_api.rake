@@ -307,7 +307,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
           end
 
 
-          runners = Runner.where(first_name: result.first_name, last_name: result.last_name, birthdate: birthdate)
+          runners = Runner.where(first_name: result.first_name, last_name: result.last_name)
 
           if runners.empty?
             result_runner = Runner.create(
