@@ -221,6 +221,10 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
       current_results_count = results - results % 100
       index = current_results_count / 100 + 1
       runner_index = current_results_count + 1
+      search_gender = gender
+      if gender == "F"
+        search_gender = "W"
+      end
       loop do
         puts "--------------------- index #{index} ---------------------"
         params = {
@@ -275,7 +279,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
             :distance => race.distance,
             :date => race.date,
             :bib => result_data["bib"],
-            :sex => result_data["gender"].try(:downcase),
+            :sex => gender,
             :age => result_data["age"],
             :team => team,
             :team_name => runner_details_data["teamName"],
