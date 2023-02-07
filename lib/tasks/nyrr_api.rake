@@ -279,7 +279,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
             :distance => race.distance,
             :date => race.date,
             :bib => result_data["bib"],
-            :sex => gender,
+            :sex => gender.downcase,
             :age => result_data["age"],
             :team => team,
             :team_name => runner_details_data["teamName"],
