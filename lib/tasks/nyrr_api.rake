@@ -237,7 +237,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
           pageSize: 51,
           sortColumn: "overallTime",
           sortDescending: false,
-          gender: gender,
+          gender: search_gender,
           ageFrom: age_range[0],
           ageTo: age_range[1],
         }
