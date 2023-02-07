@@ -402,20 +402,16 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
   race.set_team_results(team_champs)
 
   if send_race_reports
-    NyrrRaceResultsMailer.team_results_report('cptc', race.slug, ['yu.logan@gmail.com'], team_champs).deliver_now
-    NyrrRaceResultsMailer.team_results_report('pptc', race.slug, ['yu.logan@gmail.com'], team_champs).deliver_now
-    NyrrRaceResultsMailer.team_results_report('nbr', race.slug, ["yu.logan@gmail.com"], team_champs).deliver_now
-
-    # NyrrRaceResultsMailer.team_results_report('nbr', race.slug, ["rungraphs-reports@googlegroups.com", "zhua89@gmail.com"], team_champs).deliver_now
-    # NyrrRaceResultsMailer.team_results_report('qdr', race.slug, ['yu.logan@gmail.com', 'Qdrunners@gmail.com'], team_champs).deliver_now
-    # NyrrRaceResultsMailer.team_results_report('dwrt', race.slug, ['yu.logan@gmail.com', 'dashingwhippets@gmail.com'], team_champs).deliver_now
-    # NyrrRaceResultsMailer.team_results_report('cptc', race.slug, ['yu.logan@gmail.com', 'almdavid@gmail.com'], team_champs).deliver_now
-    # NyrrRaceResultsMailer.team_results_report('pptc', race.slug, ['yu.logan@gmail.com', 'training@pptc.org'], team_champs).deliver_now
-    # NyrrRaceResultsMailer.team_results_report('btr', race.slug, ['yu.logan@gmail.com', 'james.c.chu@gmail.com'], team_champs).deliver_now
-    # NyrrRaceResultsMailer.team_results_report('dpn', race.slug, ['yu.logan@gmail.com', 'white.kalliope@gmail.com', 'ns669@cornell.edu', 'cm10003@gmail.com'], team_champs).deliver_now
-    # NyrrRaceResultsMailer.team_results_report('mhrc', race.slug, ['yu.logan@gmail.com', 'jess.jonesr@gmail.com'], team_champs).deliver_now
-    # NyrrRaceResultsMailer.unattached_brooklyn_runners_report(race.slug).deliver_now
-    # NyrrRaceResultsMailer.local_competitive_qualifiers_report('nbr', race.slug, ['yu.logan@gmail.com', 'menslocalcompetitive@northbrooklynrunners.org', 'womenslocalcompetitive@northbrooklynrunners.org']).deliver_now
+    NyrrRaceResultsMailer.team_results_report('nbr', race.slug, ["rungraphs-reports@googlegroups.com", "zhua89@gmail.com"], team_champs).deliver_now
+    NyrrRaceResultsMailer.team_results_report('qdr', race.slug, ['yu.logan@gmail.com', 'Qdrunners@gmail.com'], team_champs).deliver_now
+    NyrrRaceResultsMailer.team_results_report('dwrt', race.slug, ['yu.logan@gmail.com', 'dashingwhippets@gmail.com'], team_champs).deliver_now
+    NyrrRaceResultsMailer.team_results_report('cptc', race.slug, ['yu.logan@gmail.com', 'almdavid@gmail.com'], team_champs).deliver_now
+    NyrrRaceResultsMailer.team_results_report('pptc', race.slug, ['yu.logan@gmail.com', 'training@pptc.org'], team_champs).deliver_now
+    NyrrRaceResultsMailer.team_results_report('btr', race.slug, ['yu.logan@gmail.com', 'james.c.chu@gmail.com'], team_champs).deliver_now
+    NyrrRaceResultsMailer.team_results_report('dpn', race.slug, ['yu.logan@gmail.com', 'white.kalliope@gmail.com', 'ns669@cornell.edu', 'cm10003@gmail.com'], team_champs).deliver_now
+    NyrrRaceResultsMailer.team_results_report('mhrc', race.slug, ['yu.logan@gmail.com', 'jess.jonesr@gmail.com'], team_champs).deliver_now
+    NyrrRaceResultsMailer.unattached_brooklyn_runners_report(race.slug).deliver_now
+    NyrrRaceResultsMailer.local_competitive_qualifiers_report('nbr', race.slug, ['yu.logan@gmail.com', 'menslocalcompetitive@northbrooklynrunners.org', 'womenslocalcompetitive@northbrooklynrunners.org']).deliver_now
   end
 end
 
