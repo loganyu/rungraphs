@@ -260,6 +260,9 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
           }
           url = "https://results.nyrr.org/api/v2/runners/resultDetails"
           puts url
+
+          sleep(2)
+
           response = post(url, params.to_json)
           runner_details_data = response["details"]
           if runner_details_data.nil?
@@ -352,8 +355,6 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
               end
             end
 
-            puts found
-
             if not found
               runners.each do |runner|
                 if runner.birth_year && runner.birth_year.between?(birth_year - 1, birth_year + 1)
@@ -432,7 +433,6 @@ def add_leading_zero_to_time(time)
 end
 
 def post(url, params)
-  puts url
   begin
     retries ||= 3
     response = JSON.parse(RestClient.post(url, params, HEADERS))
@@ -441,16 +441,13 @@ def post(url, params)
     sleep(2)
     begin
       err.response.follow_redirection
-      puts err.response
     rescue RestClient::ExceptionWithResponse => err2
       sleep(2)
       begin
         err2.response.follow_redirection
-        puts err2.response
-
       rescue RestClient::ExceptionWithResponse => err3
         sleep(2)
-        HEADERS[:cookie] = err3.response.headers[:set_cookie][0]
+        # HEADERS[:cookie] = err3.response.headers[:set_cookie][0]
         return JSON.parse(err3.response.follow_redirection)
       end
     end
