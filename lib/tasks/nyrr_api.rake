@@ -5,8 +5,8 @@ namespace :nyrr do
   TOKEN = "898d6b6aef0e4887"
   HEADERS = {
     :token => TOKEN,
-    :content_type => "application/x-www-form-urlencoded",
-    :accept => :json,
+    :content_type => "application/json;charset=UTF-8",
+    :accept => "application/json, text/plain, */*"
   }
 
   task :get_results, [:year, :update_runner_profiles, :send_race_reports] => :environment do |t, arg|
@@ -37,9 +37,10 @@ namespace :nyrr do
       sortDescending: 1,
     }
 
-    url = "https://results.nyrr.org/api/events/search"
-    response = post(url , params)
-    races_data = response["response"]["items"]
+    url = "https://results.nyrr.org/api/v2/events/search"
+    response = post(url , params.to_json)
+
+    races_data = response["items"]
     if update_runner_profiles
       races_data.reverse!
     end
@@ -95,10 +96,11 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
   params = {
     eventCode: race_code
   }
-  url = "https://results.nyrr.org/api/events/details"
-  response = post(url, params)
-  race_details = response["response"]
+  
+  url = "https://results.nyrr.org/api/v2/events/details"
+  response = post(url, params.to_json)
 
+  race_details = response["eventDetails"]
   race_name = race_details["eventName"]
   location = race_details["venue"]
   distance_unit_code = race_details["distanceUnitCode"]
@@ -175,9 +177,11 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
       sortColumn: "TeamName",
       sortDescending: false
     }
-    url = "https://results.nyrr.org/api/teams/search"
-    response = post(url , params)
-    teams_data = response["response"]["items"]
+    url = "https://results.nyrr.org/api/v2/teams/search"
+    response = post(url , params.to_json)
+
+    teams_data = response["items"]
+
     teams_data.each do |team_data|
       team = Team.where(:name => team_data["teamCode"].downcase).first
       if team.nil?
@@ -191,7 +195,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
       team_code_by_team_name[team_data["teamName"]] = team_data["teamCode"].downcase
     end
     total_results_count += teams_data.count
-    if total_results_count >= response["response"]["totalItems"]
+    if total_results_count >= response["totalItems"]
       break
     end 
     index += 1
@@ -241,10 +245,11 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
           ageFrom: age_range[0],
           ageTo: age_range[1],
         }
-        url = "https://results.nyrr.org/api/runners/finishers-filter"
-        response = post(url, params)
-        total_results = response["response"]["totalItems"]
-        results_data = response["response"]["items"]
+        url = "https://results.nyrr.org/api/v2/runners/finishers-filter"
+        response = post(url, params.to_json)
+
+        total_results = response["totalItems"]
+        results_data = response["items"]
 
         current_results_count += results_data.count
         index += 1
@@ -253,9 +258,13 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
           params = {
             runnerId: result_data["runnerId"]
           }
-          url = "https://results.nyrr.org/api/runners/resultDetails"
-          response = post(url, params)
-          runner_details_data = response["response"]
+          url = "https://results.nyrr.org/api/v2/runners/resultDetails"
+          puts url
+
+          sleep(2)
+
+          response = post(url, params.to_json)
+          runner_details_data = response["details"]
           if runner_details_data.nil?
             next
           end
@@ -301,7 +310,6 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
             next
           end
           result = Result.new(result_params)
-
           #create or find runner
           birthdate = result_data["birthdate"] ? result_data["birthdate"].to_date : nil
           if result.age
@@ -439,7 +447,7 @@ def post(url, params)
         err2.response.follow_redirection
       rescue RestClient::ExceptionWithResponse => err3
         sleep(2)
-        HEADERS[:cookie] = err3.response.headers[:set_cookie][0]
+        # HEADERS[:cookie] = err3.response.headers[:set_cookie][0]
         return JSON.parse(err3.response.follow_redirection)
       end
     end
