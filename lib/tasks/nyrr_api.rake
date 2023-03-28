@@ -259,9 +259,6 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
             runnerId: result_data["runnerId"]
           }
           url = "https://results.nyrr.org/api/v2/runners/resultDetails"
-          puts url
-
-          sleep(4)
 
           response = post(url, params.to_json)
           runner_details_data = response["details"]
