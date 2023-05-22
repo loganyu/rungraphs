@@ -282,7 +282,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
 
       result = Result.where(result_params).first
       if result
-        puts "already exists: #{date} - #{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
+        puts "already exists: #{date} - #{race.name} - #{runner_index} - #{gender} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
         runner_index += 1
         next
       end
@@ -369,7 +369,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
       result_runner.save!
 
       result.update("runner_id" => result_runner.id, "race_id" => race.id)
-      puts "#{date} #{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
+      puts "#{date} #{race.name} - #{runner_index} - #{gender} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
       runner_index += 1
     end
   end
