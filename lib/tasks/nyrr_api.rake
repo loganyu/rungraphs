@@ -204,8 +204,8 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
   # Get results
   loop do
     results = Result.where(race_id: race.id).count
-    current_results_count = results - results % 100
-    index = current_results_count / 100 + 1
+    current_results_count = results - results % 50
+    index = current_results_count / 50 + 1
     runner_index = current_results_count + 1
     puts "--------------------- index #{index} ---------------------"
     params = {
@@ -215,10 +215,10 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
       handicap: nil,
       city: nil,
       pageIndex: index,
-      pageSize: 51,
+      pageSize: 50,
       sortColumn: "overallTime",
       overallPlaceFrom: current_results_count + 1,
-      overallPlaceTo: current_results_count + 100,
+      overallPlaceTo: current_results_count + 50,
       sortDescending: false,
     }
     url = "https://results.nyrr.org/api/v2/runners/finishers-filter"
