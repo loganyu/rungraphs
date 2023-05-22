@@ -238,7 +238,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
           handicap: nil,
           city: nil,
           pageIndex: index,
-          pageSize: 51,
+          pageSize: 100,
           sortColumn: "overallTime",
           sortDescending: false,
           gender: search_gender,
