@@ -210,11 +210,11 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
       next
     end
     genders.each do |gender|
-      if gender == "M" && Result.where(race_id: race.id).where("age >= ?", age_range[0]).where(sex: "F").exists?
+      if gender == "M" && Result.where(race_id: race.id).where("age >= ?", age_range[0]).where(sex: "f").exists?
         puts "skipping gender M age_range #{age_range}"
         next
       end
-      if gender == "F" && Result.where(race_id: race.id).where("age >= ?", age_range[0]).where(sex: "X").exists?
+      if gender == "F" && Result.where(race_id: race.id).where("age >= ?", age_range[0]).where(sex: "x").exists?
         puts "skipping gender F age_range #{age_range}"
         next
       end
