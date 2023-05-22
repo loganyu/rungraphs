@@ -251,6 +251,11 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
         team = 0
       end
 
+      gender = result_data["gender"].downcase
+      if gender == 'w'
+        gender = 'f'
+      end
+
       result_params = {
         :first_name => result_data["firstName"].try(:downcase),
         :last_name => result_data["lastName"].try(:downcase),
