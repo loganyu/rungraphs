@@ -205,16 +205,15 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
   loop do
     results = Result.where(race_id: race.id).count
     current_results_count = results - results % 50
-    index = current_results_count / 50 + 1
     runner_index = current_results_count + 1
-    puts "--------------------- index #{index} ---------------------"
+    puts "--------------------- current_results_count #{current_results_count} ---------------------"
     params = {
       eventCode: race_code,
       runnerId: nil,
       searchString: nil,
       handicap: nil,
       city: nil,
-      pageIndex: index,
+      pageIndex: 1,
       pageSize: 50,
       sortColumn: "overallTime",
       overallPlaceFrom: current_results_count + 1,
@@ -226,8 +225,9 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
 
     total_results = response["totalItems"]
     results_data = response["items"]
-
-    index += 1
+    if total_results == 0
+      break
+    end
 
     results_data.each do |result_data|
       params = {
