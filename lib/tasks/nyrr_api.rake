@@ -202,201 +202,170 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
   end
 
   # Get results
-  genders = ["M", "F", "X"]
-  age_ranges = [[8,14], [15,19],[20,22],[23,24],[25,29],[30,34],[35,39],[40,44],[45,49],[50,54],[55,59],[60,100]]
-  age_ranges.each do |age_range|
-    if Result.where(race_id: race.id).where("age > ?", age_range[1]).exists?
-      puts "skipping age_range #{age_range}"
-      next
-    end
-    genders.each do |gender|
-      if gender == "M" && Result.where(race_id: race.id).where("age >= ?", age_range[0]).where(sex: "f").exists?
-        puts "skipping gender M age_range #{age_range}"
+  loop do
+    results = Result.where(race_id: race.id).count
+    current_results_count = results - results % 100
+    index = current_results_count / 100 + 1
+    runner_index = current_results_count + 1
+    puts "--------------------- index #{index} ---------------------"
+    params = {
+      eventCode: race_code,
+      runnerId: nil,
+      searchString: nil,
+      handicap: nil,
+      city: nil,
+      pageIndex: index,
+      pageSize: 51,
+      sortColumn: "overallTime",
+      overallPlaceFrom: current_results_count + 1,
+      overallPlaceTo: current_results_count + 100,
+      sortDescending: false,
+    }
+    url = "https://results.nyrr.org/api/v2/runners/finishers-filter"
+    response = post(url, params.to_json)
+
+    total_results = response["totalItems"]
+    results_data = response["items"]
+
+    index += 1
+
+    results_data.each do |result_data|
+      params = {
+        runnerId: result_data["runnerId"]
+      }
+      url = "https://results.nyrr.org/api/v2/runners/resultDetails"
+
+      response = post(url, params.to_json)
+      runner_details_data = response["details"]
+      if runner_details_data.nil?
         next
       end
-      if gender == "F" && Result.where(race_id: race.id).where("age >= ?", age_range[0]).where(sex: "x").exists?
-        puts "skipping gender F age_range #{age_range}"
+
+      net_time = runner_details_data["netTime"]
+      if net_time == "0:00:00"
+        net_time = nil
+      end
+
+      team = team_code_by_team_name[runner_details_data["teamName"]]
+      if team.blank?
+        team = 0
+      end
+
+      result_params = {
+        :first_name => result_data["firstName"].try(:downcase),
+        :last_name => result_data["lastName"].try(:downcase),
+        :city => result_data["city"].try(:downcase),
+        :state => result_data["stateProvince"].try(:downcase),
+        :country => result_data["iaaf"].try(:downcase),
+        :distance => race.distance,
+        :date => race.date,
+        :bib => result_data["bib"],
+        :sex => gender.downcase,
+        :age => result_data["age"],
+        :team => team,
+        :team_name => runner_details_data["teamName"],
+        :net_time => add_leading_zero_to_time(net_time),
+        :gun_time => add_leading_zero_to_time(runner_details_data["gunTime"]),
+        :pace_per_mile => runner_details_data["pace"],
+        :overall_place => runner_details_data["placeOverall"],
+        :gender_place => runner_details_data["placeGender"],
+        :ag_gender_place => runner_details_data["placeAgeGrade"],
+        :age_place => runner_details_data["placeAgeGroup"],
+        :ag_time => add_leading_zero_to_time(runner_details_data["timeAgeGrade"]),
+        :ag_percent => runner_details_data["percentAgeGrade"]
+      }
+
+      result = Result.where(result_params).first
+      if result
+        puts "already exists: #{date} - #{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
+        runner_index += 1
         next
       end
-      results = Result.where(race_id: race.id).
-        where("age >= ?", age_range[0]).
-        where("age <= ?", age_range[1]).
-        where(sex: gender.downcase).count
-      current_results_count = results - results % 100
-      index = current_results_count / 100 + 1
-      runner_index = current_results_count + 1
-      search_gender = gender
-      if gender == "F"
-        search_gender = "W"
+      result = Result.new(result_params)
+      #create or find runner
+      birthdate = result_data["birthdate"] ? result_data["birthdate"].to_date : nil
+      if result.age
+        birth_year = race.date.year - result.age
+      else
+        birth_year = nil
       end
-      loop do
-        puts "--------------------- index #{index} ---------------------"
-        params = {
-          eventCode: race_code,
-          runnerId: nil,
-          searchString: nil,
-          handicap: nil,
-          city: nil,
-          pageIndex: index,
-          pageSize: 51,
-          sortColumn: "overallTime",
-          sortDescending: false,
-          gender: search_gender,
-          ageFrom: age_range[0],
-          ageTo: age_range[1],
-        }
-        url = "https://results.nyrr.org/api/v2/runners/finishers-filter"
-        response = post(url, params.to_json)
 
-        total_results = response["totalItems"]
-        results_data = response["items"]
 
-        current_results_count += results_data.count
-        index += 1
+      runners = Runner.where(first_name: result.first_name, last_name: result.last_name)
 
-        results_data.each do |result_data|
-          params = {
-            runnerId: result_data["runnerId"]
-          }
-          url = "https://results.nyrr.org/api/v2/runners/resultDetails"
-
-          response = post(url, params.to_json)
-          runner_details_data = response["details"]
-          if runner_details_data.nil?
-            next
+      if runners.empty?
+        result_runner = Runner.create(
+          first_name: result.first_name,
+          last_name: result.last_name,
+          birth_year: birth_year,
+          birthdate: birthdate,
+          team: result.team,
+          team_name: result.team_name,
+          sex: result.sex,
+          full_name: "#{result.first_name} #{result.last_name}",
+          city: result.city,
+          state: result.state,
+          country: result.country
+        )
+      else
+        found = false
+        runners.each do |runner|
+          if runner.birth_year && runner.birth_year.between?(birth_year - 1, birth_year + 1) && runner.city == result.city && runner.team == result.team
+            result_runner = runner
+            found = true
+            break
           end
-
-          net_time = runner_details_data["netTime"]
-          if net_time == "0:00:00"
-            net_time = nil
-          end
-
-          team = team_code_by_team_name[runner_details_data["teamName"]]
-          if team.blank?
-            team = 0
-          end
-
-          result_params = {
-            :first_name => result_data["firstName"].try(:downcase),
-            :last_name => result_data["lastName"].try(:downcase),
-            :city => result_data["city"].try(:downcase),
-            :state => result_data["stateProvince"].try(:downcase),
-            :country => result_data["iaaf"].try(:downcase),
-            :distance => race.distance,
-            :date => race.date,
-            :bib => result_data["bib"],
-            :sex => gender.downcase,
-            :age => result_data["age"],
-            :team => team,
-            :team_name => runner_details_data["teamName"],
-            :net_time => add_leading_zero_to_time(net_time),
-            :gun_time => add_leading_zero_to_time(runner_details_data["gunTime"]),
-            :pace_per_mile => runner_details_data["pace"],
-            :overall_place => runner_details_data["placeOverall"],
-            :gender_place => runner_details_data["placeGender"],
-            :ag_gender_place => runner_details_data["placeAgeGrade"],
-            :age_place => runner_details_data["placeAgeGroup"],
-            :ag_time => add_leading_zero_to_time(runner_details_data["timeAgeGrade"]),
-            :ag_percent => runner_details_data["percentAgeGrade"]
-          }
-
-          result = Result.where(result_params).first
-          if result
-            puts "already exists: #{date} - #{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
-            runner_index += 1
-            next
-          end
-          result = Result.new(result_params)
-          #create or find runner
-          birthdate = result_data["birthdate"] ? result_data["birthdate"].to_date : nil
-          if result.age
-            birth_year = race.date.year - result.age
-          else
-            birth_year = nil
-          end
-
-
-          runners = Runner.where(first_name: result.first_name, last_name: result.last_name)
-
-          if runners.empty?
-            result_runner = Runner.create(
-              first_name: result.first_name,
-              last_name: result.last_name,
-              birth_year: birth_year,
-              birthdate: birthdate,
-              team: result.team,
-              team_name: result.team_name,
-              sex: result.sex,
-              full_name: "#{result.first_name} #{result.last_name}",
-              city: result.city,
-              state: result.state,
-              country: result.country
-            )
-          else
-            found = false
-            runners.each do |runner|
-              if runner.birth_year && runner.birth_year.between?(birth_year - 1, birth_year + 1) && runner.city == result.city && runner.team == result.team
-                result_runner = runner
-                found = true
-                break
-              end
-            end
-
-            if not found
-              runners.each do |runner|
-                if runner.birth_year && runner.birth_year.between?(birth_year - 1, birth_year + 1) && runner.city == result.city
-                  result_runner = runner
-                  found = true
-                  break
-                end
-              end
-            end
-
-            if not found
-              runners.each do |runner|
-                if runner.birth_year && runner.birth_year.between?(birth_year - 1, birth_year + 1)
-                  result_runner = runner
-                  found = true
-                  break
-                end
-              end
-            end
-
-            if not found
-              result_runner = Runner.create(
-                first_name: result.first_name,
-                last_name: result.last_name,
-                birth_year: birth_year,
-                birthdate: result_data["birthdate"] ? result_data["birthdate"].to_date : nil,
-                team: result.team,
-                sex: result.sex,
-                full_name: "#{result.first_name} #{result.last_name}",
-                city: result.city,
-                state: result.state,
-                country: result.country
-              )
-            else
-              # change runner team to latest if scraping new results
-              if update_runner_profiles == true
-                result_runner.update("team" => result.team)
-                result_runner.update("city" => result.city)
-                result_runner.update("state" => result.state)
-                result_runner.update("country" => result.country)
-              end
-            end
-          end
-
-          result_runner.save!
-
-          result.update("runner_id" => result_runner.id, "race_id" => race.id)
-          puts "#{date} #{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
-          runner_index += 1
         end
 
-        if current_results_count >= total_results
-          break
+        if not found
+          runners.each do |runner|
+            if runner.birth_year && runner.birth_year.between?(birth_year - 1, birth_year + 1) && runner.city == result.city
+              result_runner = runner
+              found = true
+              break
+            end
+          end
+        end
+
+        if not found
+          runners.each do |runner|
+            if runner.birth_year && runner.birth_year.between?(birth_year - 1, birth_year + 1)
+              result_runner = runner
+              found = true
+              break
+            end
+          end
+        end
+
+        if not found
+          result_runner = Runner.create(
+            first_name: result.first_name,
+            last_name: result.last_name,
+            birth_year: birth_year,
+            birthdate: result_data["birthdate"] ? result_data["birthdate"].to_date : nil,
+            team: result.team,
+            sex: result.sex,
+            full_name: "#{result.first_name} #{result.last_name}",
+            city: result.city,
+            state: result.state,
+            country: result.country
+          )
+        else
+          # change runner team to latest if scraping new results
+          if update_runner_profiles == true
+            result_runner.update("team" => result.team)
+            result_runner.update("city" => result.city)
+            result_runner.update("state" => result.state)
+            result_runner.update("country" => result.country)
+          end
         end
       end
+
+      result_runner.save!
+
+      result.update("runner_id" => result_runner.id, "race_id" => race.id)
+      puts "#{date} #{race.name} - #{runner_index} - #{gender} - #{age_range} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
+      runner_index += 1
     end
   end
 
