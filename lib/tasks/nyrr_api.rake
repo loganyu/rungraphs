@@ -194,10 +194,10 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
   end
 
   # Get results
+  results = Result.where(race_id: race.id).count
+  current_results_count = results - results % 50
+  runner_index = current_results_count + 1
   loop do
-    results = Result.where(race_id: race.id).count
-    current_results_count = results - results % 50
-    runner_index = current_results_count + 1
     puts "--------------------- current_results_count #{current_results_count} ---------------------"
     params = {
       eventCode: race_code,
@@ -364,6 +364,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
       puts "#{date} #{race.name} - #{runner_index} - #{gender} - #{result.team} - #{result.overall_place}: #{result.first_name} #{result.last_name}"
       runner_index += 1
     end
+    current_results_count += 50
   end
 
   team_champs = false
