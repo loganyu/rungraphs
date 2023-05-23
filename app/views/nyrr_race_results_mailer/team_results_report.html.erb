@@ -235,52 +235,6 @@
   <br>
 <% end %>
 
-<% female_results_by_age.each do |results_type, female_results| %>
-  <% if female_results.count > 0 %>
-    <h3><%= "#{results_type} - #{female_results.count} #{"finisher".pluralize(female_results.count)}" %></h3>
-    <table cellspacing="0" style="font-family:'lucida grande',arial,sans-serif;width:100%;text-align:center">
-      <thead>
-      <tr>
-        <th>Overall</th>
-        <th>Gender</th>
-        <th>Age</th>
-        <th>Name</th>
-        <th>Gender</th>
-        <th>Pace</th>
-        <th>Net Time</th>
-        <th>Age</th>
-        <th>AG Gender</th>
-        <th>AG Percent</th>
-        <th>City</th>
-        <th>State</th>
-        <th>Country</th>
-      </tr>
-      </thead>
-      <tbody>
-      <% female_results.each do |result| %>
-          <tr style="<%= cycle("background-color:#efefef", "") %>">
-            <td><%= result[:overall_place] %></td>
-            <td><%= result[:gender_place] %></td>
-            <td><%= result[:age_place] %></td>
-            <td><%= result[:name].split.map(&:capitalize).join(' ') %></td>
-            <td><%= result[:gender] %></td>
-            <td><%= result[:pace] %></td>
-            <td><%= result[:net_time] %></td>
-            <td><%= result[:age] %></td>
-            <td><%= result[:ag_gender_place] %></td>
-            <td><%= result[:ag_percent] ? sprintf('%.2f', result[:ag_percent]) : "" %></td>
-            <td><%= result[:city] %></td>
-            <td><%= result[:state] %></td>
-            <td><%= result[:country] %></td>
-          </tr>
-      <% end %>
-      </tbody>
-    </table>
-    <br>
-    <br>
-  <% end %>
-<% end %>
-
 <%
   male_results_by_age = {
     "Overall Men" => @race_data[:male_results],
