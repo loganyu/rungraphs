@@ -149,9 +149,17 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
   puts "date_and_time #{date_and_time}"
 
   race_params = {
+    :name => race_name,
+    :date => date,
+    :distance => distance,
+    :date_and_time => date_and_time,
+    :location => location,
+    :weather => weather,
+    :temperature => temperature,
+    :humidity => humidity,
     :code => race_code
   }
-  race = Race.where(race_params).first
+  race = Race.where({:code => race_code}).first
   if race.nil?
     race = Race.create(race_params)
   end
