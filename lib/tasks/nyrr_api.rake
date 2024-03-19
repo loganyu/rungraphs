@@ -37,7 +37,7 @@ namespace :nyrr do
       sortDescending: 1,
     }
 
-    url = "https://results.nyrr.org/api/v2/events/search"
+    url = "https://rmsprodapi.nyrr.org/api/v2/events/search"
     response = post(url , params.to_json)
 
     races_data = response["items"]
