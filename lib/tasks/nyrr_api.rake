@@ -97,7 +97,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
     eventCode: race_code
   }
   
-  url = "https://results.nyrr.org/api/v2/events/details"
+  url = "https://rmsprodapi.nyrr.org/api/v2/events/details"
   response = post(url, params.to_json)
 
   race_details = response["eventDetails"]
@@ -177,7 +177,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
       sortColumn: "TeamName",
       sortDescending: false
     }
-    url = "https://results.nyrr.org/api/v2/teams/search"
+    url = "https://rmsprodapi.nyrr.org/api/v2/teams/search"
     response = post(url , params.to_json)
 
     teams_data = response["items"]
@@ -220,7 +220,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
       overallPlaceTo: current_results_count + 50,
       sortDescending: false,
     }
-    url = "https://results.nyrr.org/api/v2/runners/finishers-filter"
+    url = "https://rmsprodapi.nyrr.org/api/v2/runners/finishers-filter"
     response = post(url, params.to_json)
 
     total_results = response["totalItems"]
@@ -233,7 +233,7 @@ def upsert_race_data(race_code, update_runner_profiles, send_race_reports)
       params = {
         runnerId: result_data["runnerId"]
       }
-      url = "https://results.nyrr.org/api/v2/runners/resultDetails"
+      url = "https://rmsprodapi.nyrr.org/api/v2/runners/resultDetails"
 
       response = post(url, params.to_json)
       runner_details_data = response["details"]
