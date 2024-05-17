@@ -9,11 +9,20 @@ rake 'projection:new[http://api.rtrt.me/events/NYRR-BRONX-10M-2021/profiles,4d7a
 
 rake projection:new["http://api.rtrt.me/events/NYRR-HEALTHYKIDNEY-2019/profiles","4d7a9ceb0be65b3cc4948ee9","31131D3E84A707837E70","6.2","Healthy Kidney 10k","March 3rd 2019 9:00am","04/24/19"]
 
+rake projection:new["https://api.rtrt.me/events/NYRR-BROOKLYN-2024/profiles","4d7a9ceb0be65b3cc4948ee9","6A2EE51883196E8E0639","13.1","Brooklyn Half","May 16th 2024 7:00am","05/16/24"]
+
+rake projection:set_team_results["brooklyn-half"]
 
 =end
 desc "Create Race Projection"
 
 namespace :projection do
+  task :set_team_results, [:slug] => :environment do |t, arg|
+    slug = arg[:slug]
+    projected_race = ProjectedRace.where(:slug => slug).first
+    projected_race.set_team_results
+  end
+
   task :new, [:url, :apiid, :token, :distance, :name, :date_and_time, :date, :distance_string] => :environment do |t, arg|
     distance = arg[:distance]
     name = arg[:name]
